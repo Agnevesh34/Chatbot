@@ -1,0 +1,4 @@
+User: How can I stay organized?
+Chatbot: Start by creating a daily to-do list and prioritizing tasks.
+User: What’s a good way to lose weight?
+Chatbot: Focus on a balanced diet and regular exercise.
