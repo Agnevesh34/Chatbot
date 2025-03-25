@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:6.0
+    container_name: mbti_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - mbti_network
+
+  backend:
+    build: ./backend
+    container_name: mbti_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - MONGO_URI=mongodb://root:example@mongo:27017/mbti-database?authSource=admin
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    depends_on:
+      - mongo
+    networks:
+      - mbti_network
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+
+  frontend:
+    build: ./mbti-app
+    container_name: mbti_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5000
+    depends_on:
+      - backend
+    networks:
+      - mbti_network
+    volumes:
+      - ./mbti-app:/app
+      - /app/node_modules
+
+volumes:
+  mongo_data:
+
+networks:
+  mbti_network:
+    driver: bridge
